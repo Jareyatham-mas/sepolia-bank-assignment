@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101828" />
+    <meta name="description" content="Sepolia Bank DApp สำหรับ Assignment 5" />
+    <title>Sepolia Bank | Assignment 5</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.17.0/dist/ethers.umd.min.js" defer></script>
+    <script src="app.js?v=20261120-2" defer></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="Sepolia Bank home">
+          <span class="brand-mark" aria-hidden="true">B</span>
+          <span>Sepolia Bank</span>
+        </a>
+        <div class="network-pill"><span class="network-dot"></span> Sepolia Testnet</div>
+      </header>
+
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">SMART CONTRACT LAB · 05</p>
+          <h1>ธนาคารของคุณ<br /><span>บน Ethereum</span></h1>
+          <p class="hero-description">ฝาก ETH ถอน ETH และตรวจยอดคงเหลือของ address ที่เชื่อมต่อได้จากหน้าเดียว</p>
+          <div class="student-card">
+            <span class="student-label">ผู้จัดทำ</span>
+            <strong id="student-name">นายจริยธรรม มาสงค์</strong>
+            <span id="student-id">รหัสนักศึกษา 66092559</span>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="coin"><span>Ξ</span></div>
+          <div class="art-caption">ETH · SEPOLIA</div>
+        </div>
+      </section>
+
+      <section class="dashboard" aria-label="Bank controls">
+        <div class="connect-panel">
+          <div>
+            <p class="panel-label">กระเป๋าเงิน</p>
+            <h2 id="wallet-status">ยังไม่ได้เชื่อมต่อ</h2>
+            <p class="muted" id="wallet-address">เชื่อม MetaMask เพื่อเริ่มใช้งาน</p>
+          </div>
+          <div class="wallet-actions">
+            <button class="button button-outline" id="switch-network-button" type="button" hidden>สลับไป Sepolia</button>
+            <button class="button button-dark" id="connect-button" type="button">เชื่อมต่อ MetaMask</button>
+          </div>
+        </div>
+
+        <div class="balance-card">
+          <div class="balance-heading">
+            <div>
+              <p class="panel-label">ยอดเงินในสัญญา</p>
+              <h2><span id="balance-value">—</span> <small>ETH</small></h2>
+            </div>
+            <button class="icon-button" id="refresh-button" type="button" aria-label="รีเฟรชยอดเงิน" title="รีเฟรชยอดเงิน">↻</button>
+          </div>
+          <p class="muted">ยอดนี้เป็นเงินฝากของ address ที่เชื่อมต่ออยู่</p>
+        </div>
+
+        <div class="action-grid">
+          <form class="action-card" id="deposit-form">
+            <div class="action-icon deposit-icon" aria-hidden="true">↓</div>
+            <p class="panel-label">เพิ่มเงินเข้าบัญชี</p>
+            <h3>Deposit</h3>
+            <label for="deposit-amount">จำนวน ETH</label>
+            <div class="amount-input"><input id="deposit-amount" name="amount" inputmode="decimal" placeholder="0.01" autocomplete="off" required /><span>ETH</span></div>
+            <button class="button button-primary" type="submit">ฝากเงิน</button>
+          </form>
+
+          <form class="action-card" id="withdraw-form">
+            <div class="action-icon withdraw-icon" aria-hidden="true">↑</div>
+            <p class="panel-label">โอนเงินกลับกระเป๋า</p>
+            <h3>Withdraw</h3>
+            <label for="withdraw-amount">จำนวน ETH</label>
+            <div class="amount-input"><input id="withdraw-amount" name="amount" inputmode="decimal" placeholder="0.01" autocomplete="off" required /><span>ETH</span></div>
+            <button class="button button-outline" type="submit">ถอนเงิน</button>
+          </form>
+        </div>
+
+        <div class="status-panel" id="status-panel" role="status" aria-live="polite">
+          <span class="status-indicator"></span>
+          <span id="status-message">เชื่อมต่อ wallet และตั้งค่า contract address เพื่อเริ่มต้น</span>
+        </div>
+        <p class="footer-note">การฝากและถอนจะเปิด MetaMask ให้ตรวจสอบและยืนยันธุรกรรมทุกครั้ง</p>
+      </section>
+    </main>
+  </body>
+</html>
