@@ -3,7 +3,7 @@
 :root {
   color-scheme: light;
   --ink: #073b32;
-  --muted: #638078;
+  --muted: #4a6a60;
   --line: #dcece5;
   --blue: #087a5b;
   --mint: #a6f4c5;
@@ -79,15 +79,106 @@ h1 span { color: #a6f4c5; }
 .footer-note { margin: 0; color: #667085; text-align: center; font-size: 13px; }
 button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #52c994; outline-offset: 2px; }
 
+.page-shell { max-width: 1080px; }
+.hero {
+  min-height: 220px;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  padding: 28px 38px;
+  background-image: radial-gradient(ellipse at 80% 45%, #137e63, transparent 55%),
+    linear-gradient(120deg, #06392f, #07533f);
+}
+.hero-copy { min-width: 0; }
+.hero h1 { font-size: clamp(30px, 5vw, 54px); }
+.hero-art { min-height: 145px; }
+.coin { width: 108px; height: 108px; animation: float-coin 6s ease-in-out infinite; }
+.coin span { font-size: 62px; }
+.orbit { width: 215px; }
+.orbit-two { width: 230px; }
+.student-card { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; margin-top: 16px; }
+@keyframes float-coin {
+  0%, 100% { transform: translateY(0) rotate(-12deg); }
+  50% { transform: translateY(-8px) rotate(-5deg); }
+}
+
+.dashboard {
+  grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+  grid-template-areas:
+    "balance wallet"
+    "balance transfer"
+    "activity contract"
+    "footer footer";
+}
+.connect-panel { grid-area: wallet; min-width: 0; padding: 16px 20px; }
+.wallet-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+#wallet-address { overflow-wrap: anywhere; }
+.balance-card {
+  grid-area: balance;
+  isolation: isolate;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  min-height: 260px;
+  padding: 26px;
+  color: white;
+  background: radial-gradient(ellipse at 92% 18%, #227d60, transparent 58%), linear-gradient(135deg, #073e33, #075349);
+}
+.balance-card::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background: repeating-radial-gradient(ellipse 215px 115px at 100% 0%, transparent 0 23px, #b5ffd522 24px 25px, transparent 26px 41px);
+  mask-image: linear-gradient(215deg, black, transparent 72%);
+}
+.balance-card .panel-label, .balance-card .muted, .balance-heading h2 small { color: #d0eee0; }
+.balance-heading h2 { font-size: clamp(44px, 7vw, 76px); overflow-wrap: anywhere; }
+.balance-heading { max-width: 100%; }
+.balance-button { margin-top: 17px; background: #d9fae6; color: #073b32; }
+.balance-button:hover:not(:disabled) { background: white; }
+.transfer-panel { grid-area: transfer; }
+.activity-card { grid-area: activity; }
+.contract-card { grid-area: contract; }
+.transfer-panel, .activity-card, .contract-card {
+  min-width: 0;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 18px 20px;
+  box-shadow: 0 12px 30px rgba(5,76,53,.055);
+}
+.transfer-panel h2, .activity-card h2, .contract-card h2 { margin: 0 0 10px; font-size: 18px; }
+.action-grid { gap: 12px; }
+.action-card { gap: 6px; min-width: 0; padding: 11px; border-radius: 14px; box-shadow: none; background: #f5faf7; }
+.action-icon { width: 28px; height: 28px; border-radius: 8px; font-size: 18px; }
+.status-panel { min-height: 0; padding: 0; background: transparent; border: 0; box-shadow: none; overflow-wrap: anywhere; }
+.contract-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
+.contract-heading h2 { margin: 0; }
+.contract-card code { display: block; background: #edf7f1; padding: 8px; border-radius: 8px; overflow-wrap: anywhere; font-size: 12px; }
+.contract-card a, .copy-feedback { display: inline-block; margin-top: 7px; color: #075b45; font-size: 13px; }
+.copy-feedback { margin-left: 8px; }
+.footer-note { grid-area: footer; }
+[hidden] { display: none !important; }
+
 @media (max-width: 760px) {
-  .page-shell { width: min(100% - 24px, 560px); padding-top: 12px; }
-  .hero { grid-template-columns: 1fr; min-height: auto; padding: 30px 24px 18px; }
-  .hero-art { min-height: 190px; }
-  .coin { width: 116px; height: 116px; }
-  .coin span { font-size: 64px; }
-  .orbit { width: 230px; }
-  .connect-panel { align-items: flex-start; flex-direction: column; padding: 18px; }
-  .connect-panel .button { width: 100%; }
-  .balance-card, .action-card { padding: 18px; }
-  .action-grid { grid-template-columns: 1fr; }
+  .page-shell { width: calc(100% - 24px); padding-top: 12px; }
+  .hero { grid-template-columns: minmax(0, 1fr) 104px; padding: 20px 17px; gap: 8px; }
+  .hero-art { min-height: 95px; }
+  .orbit, .orbit-two { width: 102px; height: 43px; }
+  .coin { width: 66px; height: 66px; }
+  .coin span { font-size: 38px; }
+  .student-card { min-width: 0; }
+  .dashboard { grid-template-columns: minmax(0, 1fr); grid-template-areas: "wallet" "balance" "transfer" "activity" "contract" "footer"; }
+  .balance-card { min-height: 216px; }
+}
+@media (max-width: 385px) {
+  .connect-panel { flex-wrap: wrap; gap: 8px; }
+  .action-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coin { animation: none; }
+  .button { transition: none; }
 }

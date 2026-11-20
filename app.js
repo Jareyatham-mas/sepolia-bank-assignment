@@ -176,6 +176,22 @@ elements.connectButton.addEventListener("click", connectWallet);
 elements.switchNetworkButton.addEventListener("click", switchToSepolia);
 elements.refreshButton.addEventListener("click", refreshBalance);
 
+const contractAddress = document.querySelector("#contract-address");
+const copyContract = document.querySelector("#copy-contract");
+const contractExplorer = document.querySelector("#contract-explorer");
+const copyFeedback = document.querySelector("#copy-feedback");
+
+contractAddress.textContent = BANK_CONTRACT_ADDRESS;
+contractExplorer.href = `https://sepolia.etherscan.io/address/${BANK_CONTRACT_ADDRESS}`;
+copyContract.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(BANK_CONTRACT_ADDRESS);
+    copyFeedback.textContent = "คัดลอกแล้ว";
+  } catch {
+    copyFeedback.textContent = "เลือกและคัดลอกที่อยู่ด้านบนได้เลย";
+  }
+});
+
 elements.depositForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   try {
