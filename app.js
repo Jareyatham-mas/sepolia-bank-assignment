@@ -32,16 +32,65 @@ let provider;
 let signer;
 let account = "";
 let chainId = 0n;
+let lastStatus = ["เชื่อม MetaMask เพื่อเริ่มใช้งาน"];
+let lastCopyMessage = "";
+const english = {
+  "เชื่อมต่อแล้ว": "Connected",
+  "ยังไม่ได้เชื่อมต่อ": "Not connected",
+  "เชื่อม MetaMask เพื่อเริ่มใช้งาน": "Connect MetaMask to get started",
+  "เชื่อมต่อ MetaMask": "Connect MetaMask",
+  "เปลี่ยนเครือข่ายเป็น Sepolia": "Switch to Sepolia",
+  "ดูธุรกรรมบน Etherscan": "View transaction on Etherscan",
+  "อ่านยอดคงเหลือไม่สำเร็จ": "Could not read the balance.",
+  "เชื่อมต่อ Bank บน Sepolia แล้ว": "Connected to Bank on Sepolia.",
+  "ยังไม่ได้ตั้งค่า contract address ใน app.js": "The Bank contract address is missing.",
+  "กรุณาสลับ MetaMask เป็น Sepolia เพื่อใช้งานสัญญา": "Switch MetaMask to Sepolia to use Bank.",
+  "เชื่อมต่อแล้ว กรุณาสลับเครือข่ายเป็น Sepolia เพื่อใช้งานสัญญา": "Wallet connected. Switch to Sepolia to use Bank.",
+  "เชื่อมต่อแล้ว ให้นำ contract address หลัง deploy ไปใส่ใน app.js": "The deployed Bank address is missing.",
+  "เชื่อมต่อ MetaMask สำเร็จ": "MetaMask connected.",
+  "เชื่อมต่อ wallet ไม่สำเร็จ": "Could not connect the wallet.",
+  "สลับไป Sepolia ไม่สำเร็จ": "Could not switch to Sepolia.",
+  "ส่งธุรกรรมแล้ว กำลังรอการยืนยัน": "Transaction sent. Waiting for confirmation.",
+  "ธุรกรรมไม่สำเร็จ": "Transaction failed.",
+  "คัดลอกแล้ว": "Address copied.",
+  "เลือกและคัดลอกที่อยู่ด้านบนได้เลย": "Select and copy the address above.",
+  "จำนวนฝากต้องมากกว่า 0 ETH": "Enter a deposit greater than 0 ETH.",
+  "จำนวนถอนต้องมากกว่า 0 ETH": "Enter a withdrawal greater than 0 ETH.",
+  "ฝาก ETH สำเร็จ": "ETH deposited.",
+  "ถอน ETH สำเร็จ": "ETH withdrawn.",
+  "ยอดเงินในสัญญาไม่เพียงพอ": "Insufficient balance in the Bank contract.",
+  "กรุณาตรวจสอบจำนวน ETH": "Check the ETH amount.",
+  "ไม่พบ MetaMask กรุณาติดตั้งหรือเปิดใช้งานส่วนขยาย MetaMask": "Install or enable the MetaMask extension to continue.",
+  "กรุณาเชื่อมต่อ MetaMask ก่อน": "Connect MetaMask first.",
+  "กรุณาสลับ MetaMask ไปยัง Sepolia Testnet": "Switch MetaMask to Sepolia.",
+  "ไม่พบ MetaMask: สามารถอ่านหน้าเว็บได้ แต่ต้องติดตั้ง MetaMask เพื่อฝากหรือถอน ETH": "Install MetaMask to deposit or withdraw ETH.",
+  "เปิดหน้านี้ผ่าน file:// อยู่ — ให้เปิดผ่าน localhost หรือ GitHub Pages ก่อนเชื่อม MetaMask": "Open on localhost or GitHub Pages before connecting MetaMask.",
+  "ไม่พบ MetaMask ในเบราว์เซอร์นี้ กรุณาเปิดส่วนขยาย MetaMask แล้วโหลดหน้าใหม่": "MetaMask was not detected. Enable it and reload.",
+  "ตั้งค่า contract address ใน app.js หลัง deploy Bank.sol บน Sepolia": "Configure the Bank contract address for Sepolia."
+};
+
+function readPreference(key) {
+  try { return localStorage.getItem(key); } catch { return null; }
+}
+
+function savePreference(key, value) {
+  try { localStorage.setItem(key, value); } catch { /* Apply for this page only. */ }
+}
+
+let language = readPreference("bank-language") === "en" ? "en" : "th";
+let theme = readPreference("bank-theme") === "dark" ? "dark" : "light";
+const translate = (message) => language === "en" ? english[message] ?? message : message;
 
 function setStatus(message, kind = "info", transactionHash = "") {
+  lastStatus = [message, kind, transactionHash];
   elements.statusPanel.dataset.kind = kind;
-  elements.statusMessage.textContent = message;
+  elements.statusMessage.textContent = translate(message);
   if (transactionHash) {
     const link = document.createElement("a");
     link.href = `https://sepolia.etherscan.io/tx/${encodeURIComponent(transactionHash)}`;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = " ดูธุรกรรมบน Etherscan";
+    link.textContent = ` ${translate("ดูธุรกรรมบน Etherscan")}`;
     elements.statusMessage.append(link);
   }
 }
@@ -70,13 +119,14 @@ function setBusy(busy) {
 }
 
 function updateWalletView() {
-  elements.walletStatus.textContent = account ? "เชื่อมต่อแล้ว" : "ยังไม่ได้เชื่อมต่อ";
-  elements.walletAddress.textContent = account ? account : "เชื่อม MetaMask เพื่อเริ่มใช้งาน";
-  elements.connectButton.textContent = account ? shortenAddress(account) : "เชื่อมต่อ MetaMask";
+  elements.walletStatus.textContent = translate(account ? "เชื่อมต่อแล้ว" : "ยังไม่ได้เชื่อมต่อ");
+  elements.walletAddress.textContent = account || translate("เชื่อม MetaMask เพื่อเริ่มใช้งาน");
+  elements.connectButton.textContent = account ? shortenAddress(account) : translate("เชื่อมต่อ MetaMask");
   elements.switchNetworkButton.hidden = !account || chainId === SEPOLIA_CHAIN_ID;
   elements.networkPill.dataset.kind = chainId === SEPOLIA_CHAIN_ID ? "success" : "warning";
-  elements.networkPill.lastChild.textContent = chainId === SEPOLIA_CHAIN_ID ? " Sepolia Testnet" : " เปลี่ยนเครือข่ายเป็น Sepolia";
-  elements.balanceValue.textContent = "—";
+  elements.networkPill.lastChild.textContent = !account || chainId === SEPOLIA_CHAIN_ID
+    ? " Sepolia Testnet"
+    : ` ${translate("เปลี่ยนเครือข่ายเป็น Sepolia")}`;
 }
 
 function requireReady() {
@@ -98,7 +148,7 @@ async function refreshBalance() {
     elements.balanceValue.textContent = formatEth(balance);
   } catch (error) {
     elements.balanceValue.textContent = "—";
-    if (account) setStatus(error.message || "อ่านยอดคงเหลือไม่สำเร็จ", "error");
+    setStatus(error.message || "อ่านยอดคงเหลือไม่สำเร็จ", "error");
   }
 }
 
@@ -112,6 +162,7 @@ async function readWalletState() {
   chainId = network.chainId;
   account = accounts[0] || "";
   signer = account ? await provider.getSigner(account) : undefined;
+  elements.balanceValue.textContent = "—";
   updateWalletView();
   if (account) {
     await refreshBalance();
@@ -159,7 +210,7 @@ async function sendTransaction(action, successMessage) {
   try {
     requireReady();
     const tx = await action();
-    setStatus(`ส่งธุรกรรมแล้ว: ${tx.hash} กำลังรอการยืนยัน`, "info", tx.hash);
+    setStatus("ส่งธุรกรรมแล้ว กำลังรอการยืนยัน", "info", tx.hash);
     await tx.wait();
     await refreshBalance();
     setStatus(successMessage, "success", tx.hash);
@@ -180,16 +231,57 @@ const contractAddress = document.querySelector("#contract-address");
 const copyContract = document.querySelector("#copy-contract");
 const contractExplorer = document.querySelector("#contract-explorer");
 const copyFeedback = document.querySelector("#copy-feedback");
+const languageToggle = document.querySelector("#language-toggle");
+const themeToggle = document.querySelector("#theme-toggle");
+const translationNodes = Array.from(document.querySelectorAll("[data-en]"), (node) => ({
+  node, thai: node.textContent, english: node.dataset.en,
+}));
+
+function renderTheme() {
+  const dark = theme === "dark";
+  document.documentElement.dataset.theme = theme;
+  themeToggle.setAttribute("aria-pressed", String(dark));
+  themeToggle.setAttribute("aria-label", language === "en" ? "Dark mode" : "โหมดมืด");
+  themeToggle.firstElementChild.textContent = dark ? "☀" : "☾";
+}
+
+function renderLanguage() {
+  const isEnglish = language === "en";
+  document.documentElement.lang = language;
+  document.querySelector(".dashboard").setAttribute("aria-label", isEnglish ? "Bank dashboard" : "บัญชีธนาคาร");
+  for (const item of translationNodes) item.node.textContent = isEnglish ? item.english : item.thai;
+  languageToggle.textContent = isEnglish ? "ไทย" : "EN";
+  languageToggle.setAttribute("aria-label", isEnglish ? "เปลี่ยนเป็นภาษาไทย" : "Switch to English");
+  updateWalletView();
+  setStatus(...lastStatus);
+  copyFeedback.textContent = translate(lastCopyMessage);
+  renderTheme();
+}
+
+languageToggle.addEventListener("click", () => {
+  language = language === "en" ? "th" : "en";
+  savePreference("bank-language", language);
+  renderLanguage();
+});
+
+themeToggle.addEventListener("click", () => {
+  theme = theme === "dark" ? "light" : "dark";
+  savePreference("bank-theme", theme);
+  renderTheme();
+});
+
+renderLanguage();
 
 contractAddress.textContent = BANK_CONTRACT_ADDRESS;
 contractExplorer.href = `https://sepolia.etherscan.io/address/${BANK_CONTRACT_ADDRESS}`;
 copyContract.addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(BANK_CONTRACT_ADDRESS);
-    copyFeedback.textContent = "คัดลอกแล้ว";
+    lastCopyMessage = "คัดลอกแล้ว";
   } catch {
-    copyFeedback.textContent = "เลือกและคัดลอกที่อยู่ด้านบนได้เลย";
+    lastCopyMessage = "เลือกและคัดลอกที่อยู่ด้านบนได้เลย";
   }
+  copyFeedback.textContent = translate(lastCopyMessage);
 });
 
 elements.depositForm.addEventListener("submit", async (event) => {

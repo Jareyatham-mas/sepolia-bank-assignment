@@ -176,9 +176,101 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 }
 @media (max-width: 385px) {
   .connect-panel { flex-wrap: wrap; gap: 8px; }
-  .action-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.page-shell { padding-block: 10px 12px; }
+.topbar { min-height: 46px; height: auto; gap: 8px; }
+.topbar-controls { display: flex; align-items: center; gap: 7px; }
+.preference {
+  display: grid;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 7px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: white;
+  color: var(--ink);
+  font-weight: 700;
+}
+.preference:hover { border-color: #5dc197; }
+#theme-toggle span { font-size: 22px; line-height: 1; }
+.hero { min-height: 148px; margin-top: 9px; padding: 16px 30px; }
+.hero-art { min-height: 109px; }
+.hero h1 { font-size: clamp(25px, 4.4vw, 44px); }
+.hero h1 .hero-title { color: white; }
+.eyebrow { margin-bottom: 6px; }
+.student-card { margin-top: 9px; padding: 5px 10px; }
+.coin { width: 80px; height: 80px; }
+.coin span { font-size: 47px; }
+.orbit { height: 62px; animation: orbit-sway 8s ease-in-out infinite alternate; }
+.orbit-two { height: 88px; animation: orbit-sway-secondary 10s ease-in-out infinite alternate; }
+.orbit-spark {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c1ffce;
+  box-shadow: 0 0 15px #91ffbd;
+  offset-path: ellipse(103px 41px at center);
+  animation: orbit-spark 9s linear infinite;
+}
+.dashboard { gap: 10px; margin-top: 10px; }
+.balance-card { min-height: 218px; padding: 17px 20px; }
+.balance-card::before { animation: tide-shift 12s ease-in-out infinite alternate; }
+.balance-heading h2 { font-size: clamp(35px, 6vw, 67px); }
+.balance-button { margin-top: 10px; }
+.connect-panel, .transfer-panel, .activity-card, .contract-card { padding: 10px 14px; }
+.transfer-panel h2, .activity-card h2, .contract-card h2 { margin-bottom: 5px; font-size: 16px; }
+.contract-heading h2 { margin-bottom: 0; }
+.action-card { padding: 7px; }
+.action-icon { display: none; }
+.amount-input { height: 40px; }
+.action-card .button { margin-top: 0; padding-inline: 7px; }
+.contract-card .button { min-height: 34px; padding-block: 4px; }
+.footer-note { font-size: 12px; }
+
+@keyframes orbit-sway { from { transform: rotate(-27deg); } to { transform: rotate(-16deg); } }
+@keyframes orbit-sway-secondary { from { transform: rotate(26deg); } to { transform: rotate(43deg); } }
+@keyframes orbit-spark { to { offset-distance: 100%; } }
+@keyframes tide-shift { to { transform: translate(-18px, 9px) scale(1.08); opacity: .66; } }
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #e5faf0;
+  --muted: #afcdc0;
+  --line: #295047;
+  --blue: #92e8bc;
+}
+[data-theme="dark"] body { background: radial-gradient(ellipse at 70% 0, #173e32, #0a201a 48%, #081813); }
+[data-theme="dark"] :is(.preference, .network-pill, .connect-panel, .transfer-panel, .activity-card, .contract-card) {
+  background: #102a23;
+  color: var(--ink);
+  border-color: var(--line);
+}
+[data-theme="dark"] .preference:hover { border-color: #8ce4b6; }
+[data-theme="dark"] .action-card, [data-theme="dark"] .contract-card code { background: #18362c; }
+[data-theme="dark"] :is(.button-outline, .amount-input) { background: #133027; border-color: #3a6657; color: var(--ink); }
+[data-theme="dark"] .button-outline:hover:not(:disabled) { background: #214a3c; }
+[data-theme="dark"] :is(.action-card label, .amount-input span, .status-panel, .footer-note) { color: var(--muted); }
+[data-theme="dark"] .contract-card :is(a, .copy-feedback) { color: #92e8bc; }
+[data-theme="dark"] .network-dot { box-shadow: 0 0 0 3px #214d3e; }
+
+@media (max-width: 760px) {
+  .hero { min-height: 0; padding: 10px 14px; grid-template-columns: minmax(0, 1fr) 78px; }
+  .hero-art { min-height: 75px; }
+  .coin { width: 54px; height: 54px; }
+  .coin span { font-size: 32px; }
+  .orbit, .orbit-two { width: 70px; height: 34px; }
+  .orbit-spark { offset-path: ellipse(34px 18px at center); }
+  .balance-card { min-height: 0; padding: 11px 14px; }
+  .balance-heading h2 { font-size: 38px; }
+  .network-pill { padding: 6px 7px; font-size: 11px; }
+  .brand { font-size: 14px; gap: 5px; }
+  .brand-mark { width: 28px; height: 28px; }
+  .preference { min-width: 35px; height: 36px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .coin { animation: none; }
+  .coin, .orbit, .orbit-spark, .balance-card::before { animation: none; }
   .button { transition: none; }
 }
