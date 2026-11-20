@@ -274,3 +274,11 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
   .coin, .orbit, .orbit-spark, .balance-card::before { animation: none; }
   .button { transition: none; }
 }
+
+@media (min-width: 761px) and (max-height: 760px) {
+  .page-shell { padding-block: 6px; }
+  .hero { min-height: 120px; padding-block: 9px; }
+  .hero-art { min-height: 96px; }
+  .dashboard { gap: 8px; }
+  .connect-panel, .transfer-panel, .activity-card, .contract-card { padding-block: 8px; }
+}
