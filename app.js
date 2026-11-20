@@ -94,7 +94,7 @@ function getBank(withSigner = false) {
 async function refreshBalance() {
   try {
     requireReady();
-    const balance = await getBank().checkBalance();
+    const balance = await getBank(true).checkBalance();
     elements.balanceValue.textContent = formatEth(balance);
   } catch (error) {
     elements.balanceValue.textContent = "—";
@@ -197,7 +197,7 @@ elements.withdrawForm.addEventListener("submit", async (event) => {
     requireReady();
     const amount = ethers.parseEther(elements.withdrawAmount.value.trim());
     if (amount <= 0n) throw new Error("จำนวนถอนต้องมากกว่า 0 ETH");
-    const currentBalance = await getBank().checkBalance();
+    const currentBalance = await getBank(true).checkBalance();
     if (amount > currentBalance) throw new Error("ยอดเงินในสัญญาไม่เพียงพอ");
     const succeeded = await sendTransaction(
       () => getBank(true).withdraw(amount),
